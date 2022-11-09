@@ -29,8 +29,7 @@ const pergunta = () => {
         name: `avud`,
         message: `Welcome. What seems to be the matter at hand?`,
         choices: [`ADD employee`, `ADD role`, `ADD department`, `VIEW employee`, `VIEW role`, `VIEW department`,
-            `VIEW employee by manager`, `VIEW employee by department`, `VIEW combined employees salary by department`,
-            `UPDATE employee's manager`, `UPDATE emplyee role`, `DELETE employee`, `DELETE role`, `DELETE department`, `EXIT`]
+             `UPDATE emplyee role`, `EXIT`]
     }])
         .then(avud => {
             console.log(avud)
@@ -77,17 +76,17 @@ const pergunta = () => {
                     upEmpRole()
                     break
 
-                case `DELETE employee`:
-                    delEmp()
-                    break
+                // case `DELETE employee`:
+                //     delEmp()
+                //     break
 
-                case `DELETE role`:
-                    delRole()
-                    break
+                // case `DELETE role`:
+                //     delRole()
+                //     break
 
-                case `DELETE department`:
-                    delDep()
-                    break
+                // case `DELETE department`:
+                //     delDep()
+                //     break
 
                 case `EXIT`:
                     console.log(`Thank you for using our CMS. Please take care!`)
