@@ -1,6 +1,6 @@
 const inquirer = require(`inquirer`)
 const mysql = require(`mysql2`)
-// const db = mysql.createConnection(`mysql://root:15@Chillea@localhost:3306/emploixMGMT_db`)
+// const db = mysql.createConnection(`mysql://root:@localhost:3306/emploixMGMT_db`)
 const db = mysql.createConnection({
     host: `localhost`,
     user: `root`,
