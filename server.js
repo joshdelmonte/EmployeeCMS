@@ -1,8 +1,12 @@
-const db = mysql.createConnection(`mysql://root:rootroot@localhost:3005/emploixMGMT_db`)
 const inquirer = require(`inquirer`)
 const mysql = require(`mysql2`)
-const PORT = process.env.PORT || 3001;
-const app = express();
+// const db = mysql.createConnection(`mysql://root:15@Chillea@localhost:3306/emploixMGMT_db`)
+const db = mysql.createConnection({
+    host: `localhost`,
+    user: `root`,
+    password: `15@Chillea`,
+    database: `emploixMGMT_db`
+})
 
 // add employee, department, & role
 
@@ -19,77 +23,77 @@ const app = express();
 //  Delete departments, roles, and employees.
 
 //  View the total utilized budget of a department (in other words, the combined salaries of all employees in that department).
-const pergunta = () =>{
-inquirer.prompt([{
-    type: `list`,
-    name: `avud`,
-    message: `Welcome. What seems to be the matter at hand?`,
-    choices: [`ADD employee`,`ADD role`, `ADD department`, `VIEW employee`, `VIEW role`, `VIEW department`,
-     `VIEW employee by manager`, `VIEW employee by department`, `VIEW combined employees salary by department`,
-     `UPDATE employee's manager`, `UPDATE emplyee role`, `DELETE employee`,`DELETE role`, `DELETE department`, `EXIT`]
-}])
-.then(avud => {
-    console.log(avud)
-    console.log(avud.avud)
-    switch(avud.avud) {
-        
-        case `ADD employee`:
-        addEmployee()
-        break
-        
-        case `ADD role`:
-        addRole()
-        break
-        
-        case `ADD department`:
-        addDepartment()
-        break
-        
-        case `VIEW employee`:
-        viewEmployee()
-        break
-        
-        case `VIEW role`:
-        viewRole()
-        break
-        
-        case `VIEW department`:
-        viewDepartment()
-        break
-        
-        // case `VIEW employee by manager`:
-        // viewEmpByMan()
-        // break
-        
-        // case `VIEW combined employees salary by department`:
-        // viewEmpSalDep()
-        // break
-        
-        case `UPDATE employee's manager`:
-        upEmpMan()
-        break
+const pergunta = () => {
+    inquirer.prompt([{
+        type: `list`,
+        name: `avud`,
+        message: `Welcome. What seems to be the matter at hand?`,
+        choices: [`ADD employee`, `ADD role`, `ADD department`, `VIEW employee`, `VIEW role`, `VIEW department`,
+            `VIEW employee by manager`, `VIEW employee by department`, `VIEW combined employees salary by department`,
+            `UPDATE employee's manager`, `UPDATE emplyee role`, `DELETE employee`, `DELETE role`, `DELETE department`, `EXIT`]
+    }])
+        .then(avud => {
+            console.log(avud)
+            console.log(avud.avud)
+            switch (avud.avud) {
 
-        case `UPDATE employee role`:
-        upEmpRole()
-        break
-        
-        case `DELETE employee`:
-        delEmp()
-        break
+                case `ADD employee`:
+                    addEmployee()
+                    break
 
-        case `DELETE role`:
-        delRole()
-        break
+                case `ADD role`:
+                    addRole()
+                    break
 
-        case `DELETE department`:
-        delDep()
-        break
+                case `ADD department`:
+                    addDepartment()
+                    break
 
-        case `EXIT`:
-        console.log(`Thank you for using our CMS. Please take care!`)
+                case `VIEW employee`:
+                    viewEmployee()
+                    break
 
-    }
-})
+                case `VIEW role`:
+                    viewRole()
+                    break
+
+                case `VIEW department`:
+                    viewDepartment()
+                    break
+
+                // case `VIEW employee by manager`:
+                // viewEmpByMan()
+                // break
+
+                // case `VIEW combined employees salary by department`:
+                // viewEmpSalDep()
+                // break
+
+                // case `UPDATE employee's manager`:
+                //     upEmpMan()
+                //     break
+
+                case `UPDATE employee role`:
+                    upEmpRole()
+                    break
+
+                case `DELETE employee`:
+                    delEmp()
+                    break
+
+                case `DELETE role`:
+                    delRole()
+                    break
+
+                case `DELETE department`:
+                    delDep()
+                    break
+
+                case `EXIT`:
+                    console.log(`Thank you for using our CMS. Please take care!`)
+
+            }
+        })
 }
 //questions to ascertain employee
 const addEmployee = () => {
@@ -106,9 +110,9 @@ const addEmployee = () => {
     },
     {
         message: `What is the role of this person?`,
-        type: `list`,
+        type: `input`,
         name: `role_id`,
-        choices: [`Manager`, `Receptionist`, `Salesperson`, `Accountant`, `Warehouse`, `HR`]
+        // choices: [`Manager`, `Receptionist`, `Salesperson`, `Accountant`, `Warehouse`, `HR`]
     },
     {
         message: `Are they a manager?`,
@@ -116,42 +120,44 @@ const addEmployee = () => {
         name: `manager_verified`,
         choices: [`Yes`, `No`]
     }
-])
-    .then(employee => {
-        if(employee.manager_verified === `Yes`) {
-            console.log(`--ADDING MANAGER--`)
-            delete employee.manager_verified
-           
-            console.log(employee)
-            
-            db.query(`INSERT INTO employees SET ?`, employee, err=> {
-                if(err) {console.log(err)}
-            })
-            console.log(`--UNDERLING ADDED--`)
-            pergunta()
-        }else if (employee.manager_verified === `No`) {
-            
-            inquirer.prompt([{
-                type: `input`,
-                name: `manager_id`,
-                message: `What is the employees manager ID?`
-            }])
-            .then(underling => {
-                console.log(employee)
-                console.log(underling)
-                
+    ])
+        .then(employee => {
+            if (employee.manager_verified === `Yes`) {
+                console.log(`--ADDING MANAGER--`)
                 delete employee.manager_verified
 
-                let novaEmploy = {
-                    ...employee,
-                    ...underling
-                }
-                db.query(`INSERT INTO employees SET ?`, novaEmploy, err=> {
-                    if(err) {console.log(err)}
+                console.log(employee)
+
+                db.query(`INSERT INTO employees SET ?`, employee, err => {
+                    if (err) { console.log(err) }
                 })
-                console.log(`--ADDED EMPLOYEE--`)
+                console.log(`--UNDERLING ADDED--`)
                 pergunta()
-    })
+            } else if (employee.manager_verified === `No`) {
+
+                inquirer.prompt([{
+                    type: `input`,
+                    name: `manager_id`,
+                    message: `What is the employees manager ID?`
+                }])
+                    .then(underling => {
+                        console.log(employee)
+                        console.log(underling)
+
+                        delete employee.manager_verified
+
+                        let novaEmploy = {
+                            ...employee,
+                            ...underling
+                        }
+                        db.query(`INSERT INTO employees SET ?`, novaEmploy, err => {
+                            if (err) { console.log(err) }
+                        })
+                        console.log(`--ADDED EMPLOYEE--`)
+                        pergunta()
+                    })
+            }
+        })
 }
 //questions to ascertain role
 const addRole = () => {
@@ -162,7 +168,7 @@ const addRole = () => {
         name: `title`
     },
     {
-        message:`What salary are we allotting this role?`,
+        message: `What salary are we allotting this role?`,
         type: `input`,
         name: `salary`
     },
@@ -171,15 +177,15 @@ const addRole = () => {
         type: `input`,
         name: `department_id`
     }
-])
-    .then(role => {
-        console.log(role)
-        db.query(`INSERT INTO roles SET ?`, role, err=> {
-            if(err) {console.log(err)}
+    ])
+        .then(role => {
+            console.log(role)
+            db.query(`INSERT INTO roles SET ?`, role, err => {
+                if (err) { console.log(err) }
+            })
+            console.log(`--ADDED ROLE--`)
+            pergunta()
         })
-        console.log(`--ADDED ROLE--`)
-        pergunta()
-    })
 }
 //questions to ascertain department
 const addDepartment = () => {
@@ -189,14 +195,14 @@ const addDepartment = () => {
         type: `input`,
         name: `name`
     }])
-    .then(department => {
-        console.log(department)
-        db.query(`INSERT INTO departments SET ?`, department, err=> {
-            if(err) {console.log(err)}
+        .then(department => {
+            console.log(department)
+            db.query(`INSERT INTO departments SET ?`, department, err => {
+                if (err) { console.log(err) }
+            })
+            console.log(`--ADDED DEPARTMENT--`)
+            pergunta()
         })
-        console.log(`--ADDED DEPARTMENT--`)
-        pergunta()
-    })
 }
 //update employee role
 const upEmpRole = () => {
@@ -206,49 +212,56 @@ const upEmpRole = () => {
         message: `What's the ID of the employee you're changing?`
     },
     {
-        name:`role_id`,
+        name: `role_id`,
         type: `input`,
-        message:`What's the ID of the role we're updating to?`
+        message: `What's the ID of the role we're updating to?`
     }])
 
-    .then(employee => {
+        .then(employee => {
 
-        let novaRolo = {
-            role_id: employee.role.id
-        }
-        db.query(`UPDATE employees SET ? WHERE id = ${employee.id} `, novaRolo, err=> {
-            if(err) {console.log(err)}
+            let novaRolo = {
+                role_id: employee.role.id
+            }
+            db.query(`UPDATE employees SET ? WHERE id = ${employee.id} `, novaRolo, err => {
+                if (err) { console.log(err) }
+            })
+            console.log(`--UPDATED EMPLOYEE--`)
+            pergunta()
         })
-        console.log(`--UPDATED EMPLOYEE--`)
+}
+//View entire employees
+const viewEmployee = () => {
+    db.query(`SELECT * FROM employees`, (err, employees) => {
+        if (err) {
+            console.log(err)
+        }
+        console.table(employees)
         pergunta()
     })
 }
 //View the dapartment entirely
-    const viewDepartment = () => {
-        db.query(`SELECT * FROM departments`, (departments, err) => {
-            if(err) {
-                console.log(err)
-            }
-            console.table(departments)
-        })
+const viewDepartment = () => {
+    db.query(`SELECT * FROM departments`, ( err, departments) => {
+        if (err) {
+            console.log(err)
+        }
+        console.table(departments)
         pergunta()
-    }
- //View roles entirely   
-    const viewRole = () => {
-        db.query(`SELECT * FROM roles`, (err, roles) => {
-            if(err) {
-                console.log(err)
-            }
-            console.table(roles)
-        })
+    })
+}
+//View roles entirely   
+const viewRole = () => {
+    db.query(`SELECT * FROM roles`, (err, roles) => {
+        if (err) {
+            console.log(err)
+        }
+        console.table(roles)
         pergunta()
-    }
-    const viewEmployee = () => {
-        db.query(`SELECT * FROM employees`, (err, employees) => {
-            if(err) {
-                console.log(err)
-            }
-            console.table(employees)
-        })
-        pergunta()
-    }
+    })
+}
+
+pergunta()
+
+const delEmp = () => {
+    db.query
+}
