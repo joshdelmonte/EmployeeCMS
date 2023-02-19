@@ -68,13 +68,13 @@ const pergunta = () => {
                 // viewEmpSalDep()
                 // break
 
-                // case `UPDATE employee's manager`:
-                //     upEmpMan()
-                //     break
-
-                case `UPDATE employee role`:
-                    upEmpRole()
+                case `UPDATE employee's manager`:
+                    upEmpMan()
                     break
+
+                // case `UPDATE employee role`:
+                //     upEmpRole()
+                //     break
 
                 // case `DELETE employee`:
                 //     delEmp()
@@ -204,30 +204,38 @@ const addDepartment = () => {
         })
 }
 //update employee role
-const upEmpRole = () => {
-    inquirer.prompt([{
-        name: `id`,
-        type: `input`,
-        message: `What's the ID of the employee you're changing?`
-    },
-    {
-        name: `role_id`,
-        type: `input`,
-        message: `What's the ID of the role we're updating to?`
-    }])
+//Right now it's missing the ability to update the employee's role
+//To do that, we need to add a new column to the employees table
+//We need to add a new column to the employees table called role_id
+const upEmpMan = () => {
+    // Prompt user to select employee to update
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'empId',
+        message: 'Enter the ID of the employee you want to update:',
+      },
+      {
+        type: 'input',
+        name: 'newManagerId',
+        message: 'Enter the ID of the new manager:',
+      },
+    ])
+      .then((answers) => {
+        // Update employee's manager in the database
+        const sql = `UPDATE employees SET manager_id = ? WHERE id = ?`;
+        db.query(sql, [answers.newManagerId, answers.empId], (err, result) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log(`${result.affectedRows} record(s) updated`);
+          }
+          pergunta();
+        });
+      });
+  };
+  
 
-        .then(employee => {
-
-            let novaRolo = {
-                role_id: employee.role.id
-            }
-            db.query(`UPDATE employees SET ? WHERE id = ${employee.id} `, novaRolo, err => {
-                if (err) { console.log(err) }
-            })
-            console.log(`--UPDATED EMPLOYEE--`)
-            pergunta()
-        })
-}
 //View entire employees
 const viewEmployee = () => {
     db.query(`SELECT * FROM employees`, (err, employees) => {
